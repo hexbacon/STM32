@@ -95,8 +95,13 @@ int main(void)
   uint32_t now = 0, last_blink = 0;
   while (1)
   {
+    now = HAL_GetTick();
+    if(now - last_blink >= 50)
+    {
       HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-      HAL_Delay(100);
+      last_blink = now;
+    }
+    
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -167,7 +172,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : LED_Pin */
   GPIO_InitStruct.Pin = LED_Pin;
