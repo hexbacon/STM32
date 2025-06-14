@@ -25,10 +25,6 @@ To get started with the NUCLEO-F446RE board, you will need the following:
 - STM32 HAL library for hardware abstraction
 - Basic knowledge of C programming and embedded systems
 
-
-
-
-
 ## [Documentation](#documentation)
 The documentation for this project is available in the `Documentation` directory. It includes information on regards to the board and its features.
 
@@ -36,4 +32,14 @@ The documentation for this project is available in the `Documentation` directory
 - [STM32F446RE Schematics](Documentation/mb1136-default-c04_schematic.pdf)
 - [STM32F446RE Documentation](Documentation/stm32f446mc.pdf)
 - [STM32F446RE Reference Manual](Documentation/um1724-stm32-nucleo64-boards-mb1136-stmicroelectronics.pdf)
+
+## Projects
+
+- [Blink_1](Blink_1/README.md) - A simple project that aims to teach how to set up a STM32 CubeIDE project for the STM32 NUCLEO-F446RE board. While this project has code that blinks an LED, however, it does not work and is intentionally left incomplete.
+- [Blink_2](Blink_2/README.md) - In this project, we will address the issue found in the previous project, Blink_1, by implementing a more efficient way to blink an LED using timer interrupts. This will allow us to keep the LED blinking without blocking the CPU, enabling it to perform other tasks simultaneously.
+- [Blink_Starter](Blink_Starter/README.md) - This project is a simple starter project that demonstrates how to set up a basic STM32 CubeIDE project for the STM32 NUCLEO-F446RE board. It includes basic configurations and a simple LED blinking example.
+
+
+
+
 
