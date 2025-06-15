@@ -123,10 +123,13 @@ int main(void)
   uint32_t now = 0, last_blink = 0, last_tick = 0, loop_cnt = 0;
   while (1)
   {
+    // Get the current tick from the board
     now = HAL_GetTick();
     if(now - last_blink >= blink_delays[index])
     {
+      // Toggle GPIO if condition is true
       HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+      // Update last_blink
       last_blink = now;
     }
     if(now - last_tick >= 1000)

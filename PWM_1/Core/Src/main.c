@@ -134,10 +134,12 @@ int main(void)
       printf("PWM Value = %lu\n", pwm_value);
       // Change the PWM Pulse value
       __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_1, pwm_value);
-      
+      // Update pwm_value to current value + pwm_change
       pwm_value += pwm_change;
 
+      // If the pwm is zero, then update the rate to positive 1
       if(pwm_value == 0) pwm_change = 1;
+      // If the pwm is 100, then update the rate to negative 1
       if(pwm_value == 100) pwm_change = -1;
 
       next_change = now + 50;
