@@ -40,6 +40,7 @@ The documentation for this project is available in the `Documentation` directory
 - [Blink_Starter](Blink_Starter/README.md) - This project is a simple starter project that demonstrates how to set up a basic STM32 CubeIDE project for the STM32 NUCLEO-F446RE board. It includes basic configurations and a simple LED blinking example.
 - [Timer_1](Timer_1/README.md) - This project demonstrates how to use timers in STM32 to create a simple timer-based application. It includes configurations for timer interrupts and basic timer functionalities.
 - [Timer_2](Timer_2/README.md) - This project builds upon Timer_1 and demonstrates how to use a timer to create a PWM signal. It includes configurations for PWM generation and basic PWM functionalities.
+- [PWM_1](PWM_1/README.md) - This project demonstrates how to use PWM programmatically in STM32. It includes configurations for PWM generation and basic PWM functionalities.
 
 
 
