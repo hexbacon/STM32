@@ -48,7 +48,7 @@ In this project, we explored even futher the capabilities of using timers and ge
 ```
 
 # Output Signal 
-<video src="./Vid/PWM Ouput.mov" width="640" height="480"  autoplay loop></video>
+![Output Signal](./Vid/PWMOuput-ezgif.com-video-to-gif-converter.gif)
 
 # Conclusion
 In this project, we successfully generated a PWM signal and programmatically changed its pulse width using the STM32 board. The use of timers and the HAL library functions allowed us to control the PWM signal effectively. This project serves as a foundation for further exploration of PWM applications in embedded systems.
