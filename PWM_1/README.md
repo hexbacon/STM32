@@ -4,7 +4,7 @@ In this project, we explored even futher the capabilities of using timers and ge
 
 # Getting Started
 
-1. Follo the steps on the [Gettting Started](https://github.com/hexbacon/STM32/tree/main/Timer_2) from the Timer_2 project to set up the STM32 board.
+1. Follow the steps on the [Gettting Started](https://github.com/hexbacon/STM32/tree/main/Timer_2) from the Timer_2 project to set up the STM32 board.
 2. Do not set the pulse width on the CubeMX, we will do it programmatically.
 3. Start the PWM signal with the `HAL_TIM_PWM_Start` function.
 ```c
