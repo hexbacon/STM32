@@ -136,9 +136,9 @@ int main(void)
       printf("PWM Value = %lu\n", pwm_value);
       // Change the PWM Pulse value
       __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_1, pwm_value);
-      __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_2, 1000-pwm_value);
+      __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_2, 100-pwm_value);
       __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_3, pwm_value);
-      __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_4, 1000-pwm_value);
+      __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_4, 100-pwm_value);
       // Update pwm_value to current value + pwm_change
       pwm_value += pwm_change;
 
