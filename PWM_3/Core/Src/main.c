@@ -48,7 +48,16 @@ TIM_HandleTypeDef htim4;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
+uint32_t led_channel[] = { TIM_CHANNEL_1, TIM_CHANNEL_2, TIM_CHANNEL_3, TIM_CHANNEL_4 };
+float angles[] = { 0, 0, 0, 0 };
+float angles_changes[] = { 
+  1 * (2 * M_PI / SAMPLE_FREQUENCY),
+  2 * (2 * M_PI / SAMPLE_FREQUENCY),
+  0.5 * (2 * M_PI / SAMPLE_FREQUENCY),
+  0.25 * (2 * M_PI / SAMPLE_FREQUENCY)
+};
 
+uint32_t cb_f = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -63,7 +72,17 @@ static void MX_USART2_UART_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-// Send printf to uart1
+/**
+ * @brief  Retargets the C library printf output to the UART.
+ * 
+ * This function overrides the low-level _write syscall used by printf and similar functions,
+ * redirecting their output to the specified UART peripheral (here, huart2).
+ * 
+ * @param  fd   File descriptor. 1 for stdout, 2 for stderr.
+ * @param  ptr  Pointer to the data buffer to transmit.
+ * @param  len  Length of the data to transmit.
+ * @retval Number of bytes transmitted on success, -1 on failure.
+ */
 int _write(int fd, char* ptr, int len) {
   HAL_StatusTypeDef hstatus;
 
@@ -75,6 +94,36 @@ int _write(int fd, char* ptr, int len) {
       return -1;
   }
   return -1;
+}
+
+/**
+ * @brief Callback function called when a PWM pulse is finished on TIM4.
+ *
+ * This function is triggered by the HAL library when a PWM pulse completes on TIM4.
+ * It iterates through the `angles` array, updating each angle by its corresponding
+ * value in `angles_changes`. If an angle exceeds 2*PI, it wraps around.
+ * The function then updates the PWM compare value for each channel using a sine
+ * function to generate a waveform. The compare value is calculated as:
+ *   SAMPLE_MID_POINT - (SAMPLE_MID_POINT * sin(angle))
+ * This effectively modulates the PWM duty cycle to create a sinusoidal output.
+ * The callback counter `cb_f` is incremented at the end of the function.
+ *
+ * @param htim Pointer to the TIM handle structure.
+ */
+inline void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
+{
+  if(htim->Instance == TIM4)
+  {
+    for(uint32_t idx = 0; idx < sizeof(angles) / sizeof(angles[0]); idx++)
+      {
+        angles[idx] = angles[idx] + angles_changes[idx];
+        if(angles[idx] >= 2 * M_PI) angles[idx] -= 2 * M_PI;
+
+        // Update the timer
+        __HAL_TIM_SET_COMPARE(&htim4, led_channel[idx], SAMPLE_MID_POINT - (SAMPLE_MID_POINT * sin(angles[idx])));
+      }
+  }
+  cb_f++;
 }
 
 /* USER CODE END 0 */
@@ -113,10 +162,10 @@ int main(void)
   /* USER CODE BEGIN 2 */
   printf("Board Starting\n");
   // Init all timers
-  HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
-  HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
-  HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
+  HAL_TIM_PWM_Start_IT(&htim4, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start_IT(&htim4, TIM_CHANNEL_2);
+  HAL_TIM_PWM_Start_IT(&htim4, TIM_CHANNEL_3);
+  HAL_TIM_PWM_Start_IT(&htim4, TIM_CHANNEL_4);
 
   /* USER CODE END 2 */
 
@@ -124,21 +173,29 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   uint16_t pwm_value = 0;
   int8_t pwm_change = 1;
-  uint32_t now = 0, next_tick = 1000, loop_count = 0, next_change = 0;
+  uint32_t now = 0, next_tick = 1000, loop_count = 0, next_change = 0, next_sample = SAMPLE_DELAY;
   while (1)
   {
     // Get Tick directly
     now = uwTick;
     if(now >= next_tick)
     {
-      printf("Tick %lu (loop = %lu)\n", now/1000, loop_count);
+      printf("Tick %lu (loop = %lu, callback = %lu)\n", now/1000, loop_count, cb_f);
       loop_count = 0;
       next_tick = now + 1000;
     }
 
+    if(now >= next_sample)
+    {
+      // Itirate the led_channels
+      // On callback function
+      next_sample = now + SAMPLE_DELAY;
+    }
+
+    /*
     if(now >= next_change)
     {
-      printf("PWM Value = %lu\n", pwm_value);
+      //printf("PWM Value = %lu\n", pwm_value);
       // Change the PWM Pulse value
       __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_1, pwm_value);
       __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_2, 100-pwm_value);
@@ -154,6 +211,7 @@ int main(void)
 
       next_change = now + 25;
     }
+    */ 
     loop_count++;
     /* USER CODE END WHILE */
 
